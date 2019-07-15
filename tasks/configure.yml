@@ -1,0 +1,54 @@
+---
+- name: Get OS details
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+
+  # CONFIGURE AWX
+  - name: Initialize DB
+    shell: |
+      - scl enable rh-postgresql10 "postgresql-setup initdb"
+
+  - name: Start and enable Postgresql Database services
+    systemd:
+      enable: yes
+      state: started
+      name: rh-postgresql10-postgresql
+
+  - name: Start and enable RabbitMQ service
+    systemd:
+      enable: yes
+      state: started
+      name: rabbitmq-server
+
+  - name: Create Postgres user and DB
+    shell: |
+      - scl enable rh-postgresql10 "su postgres -c \"createuser -S awx\""
+      - scl enable rh-postgresql10 "su postgres -c \"createdb -O awx awx\""
+
+  - name: Import Database data
+    shell: |
+      - scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
+    become: True
+    become_user: awx
+
+  - name: Initial configuration of AWX
+    shell: |
+      - echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | scl enable rh-python36 rh-postgresql10 "awx-manage shell"
+    become: True
+    become_user: awx
+
+  - name: Initial configuration of AWX
+    shell: |
+      - scl enable rh-python36 rh-postgresql10 "awx-manage create_preload_data" # Optional Sample Configuration
+      - scl enable rh-python36 rh-postgresql10 "awx-manage provision_instance --hostname=$(hostname)"
+      - scl enable rh-python36 rh-postgresql10 "awx-manage register_queue --queuename=tower --hostnames=$(hostname)"
+    become: True
+    become_user: awx
+
+  - name: Start and enable AWX service
+    systemd:
+      enable: yes
+      state: started
+      name: awx
