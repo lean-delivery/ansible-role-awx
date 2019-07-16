@@ -1,4 +1,12 @@
 ---
+
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "/var/opt/rh/rh-postgresql10/lib/pgsql/data"
+  register: rh_pgdata_dir
+  become: true
+  become_user: root
+
   # CONFIGURE AWX
 - name: Initialize DB
   command:
@@ -7,7 +15,7 @@
     - enable
     - rh-postgresql10
     - "postgresql-setup initdb"
-  when: true
+  when: not rh_pgdata_dir.stat.exists
   become: true
   become_user: root
 
@@ -34,9 +42,19 @@
     - enable
     - rh-postgresql10
     - "su postgres -c \"createuser -S awx\""
+  register: pg_create_user_output
+  ignore_errors: true
   when: true
   become: true
   become_user: root
+
+- name: Create Postgres user and DB - create user - validation
+  set_fact: pg_create_user_result = failed
+  when: pg_create_user_output.stderr|length > 0 and pg_create_user_output.stderr.find('already exists') == 0
+
+- name: Create Postgres user and DB - create user - fail in case of error
+  fail: msg="Postgres failed creating user"
+  when: pg_create_user_result == "failed"
 
 - name: Create Postgres user and DB - create DB
   command:
@@ -141,3 +159,36 @@
     name: awx-web
   become: true
   become_user: root
+
+# Configure SE Linux
+- name: "SE Linux - Install ansible selinux support library"
+  package:
+    name: libselinux-python
+    state: present
+  register: status
+  retries: 10
+  delay: 2
+  until: status is success
+  become: true
+
+- name: "SE Linux - Install ansible selinux configure libraries"
+  package:
+    name:
+      - policycoreutils-python
+      - libsemanage-python
+    state: present
+  register: status
+  retries: 10
+  delay: 2
+  until: status is success
+  become: true
+  when: ansible_selinux.status == "enabled"
+
+- name: "SE Linux - Enable connections to HTTP port"
+  seport:
+    ports: "80, 443"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  become: true
+  when: ansible_selinux.status == "enabled" and ansible_selinux.mode != "disabled"
