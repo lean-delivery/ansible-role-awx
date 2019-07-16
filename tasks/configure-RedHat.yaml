@@ -55,7 +55,7 @@
     scl enable rh-python36 rh-postgresql10 "awx-manage migrate" | echo
   become: true
   become_user: awx
-  becom_method: sudo
+  become_method: sudo
   when: true
   args:
     executable: /bin/bash
