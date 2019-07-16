@@ -1,9 +1,8 @@
 ---
-
 - name: Check if PostgreSQL database is initialized.
   stat:
-    path: "/var/opt/rh/rh-postgresql10/lib/pgsql/data"
-  register: rh_pgdata_dir
+    path: "/var/opt/rh/rh-postgresql10/lib/pgsql/data/PG_VERSION"
+  register: rh_pgdata_file
   become: true
   become_user: root
 
@@ -15,7 +14,7 @@
     - enable
     - rh-postgresql10
     - "postgresql-setup initdb"
-  when: not rh_pgdata_dir.stat.exists
+  when: not rh_pgdata_file.stat.exists
   become: true
   become_user: root
 
