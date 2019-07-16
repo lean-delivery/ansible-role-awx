@@ -15,8 +15,8 @@
     name:
     - epel-release
     state: present
-  register: installed-epel-release
-  until: installed-epel-release is succeeded
+  register: installed_epel_release
+  until: installed_epel_release is succeeded
 
 - name: Install SCL
   package:
@@ -24,15 +24,15 @@
     - centos-release-scl
     - scl-utils-build
     state: present
-  register: installed-scl
-  until: installed-scl is succeeded
+  register: installed_scl
+  until: installed_scl is succeeded
 
 - name: Install RabbitMQ
   package:
     name: rabbitmq-server
     state: present
-  register: installed-rabbit-mq
-  until: installed-rabbit-mq is succeeded
+  register: installed_rabbit_mq
+  until: installed_rabbit_mq is succeeded
 
 - name: Install Postgres and Memcached
   package:
@@ -40,16 +40,16 @@
       - rh-postgresql10
       - memcached
     state: present
-  register: installed-postgres
-  until: installed-postgres is succeeded
+  register: installed_postgres
+  until: installed_postgres is succeeded
 
 - name: Install Python dependancies
   package:
     name:
       - rh-python36
     state: present
-  register: installed-python-dependancies
-  until: installed-python-dependancies is succeeded
+  register: installed_python_dependancies
+  until: installed_python_dependancies is succeeded
 
 - name: Install other Python dependancies
   yum:
@@ -63,13 +63,13 @@
     exclude:
     - '*-debuginfo'
     state: present
-  register: installed-python36
-  until: installed-python36 is succeeded
+  register: installed_python36
+  until: installed_python36 is succeeded
 
 - name: Install AWX
   yum:
     name:
     - ansible-awx
     state: present
-  register: installed-awx
-  until: installed-awx is succeeded
+  register: installed_awx
+  until: installed_awx is succeeded
