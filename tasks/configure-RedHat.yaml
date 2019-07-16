@@ -120,4 +120,3 @@
   become: true
   become_user: awx
   when: true
-  
