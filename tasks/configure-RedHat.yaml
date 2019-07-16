@@ -1,7 +1,7 @@
 ---
 # CONFIGURE AWX
 - name: Initialize DB
-  shell: |
+  command: |
     - scl enable rh-postgresql10 "postgresql-setup initdb"
   when: true
 
@@ -18,7 +18,7 @@
     name: rabbitmq-server
 
 - name: Create Postgres user and DB
-  shell: |
+  command: |
     - scl enable rh-postgresql10 "su postgres -c \"createuser -S awx\""
     - scl enable rh-postgresql10 "su postgres -c \"createdb -O awx awx\""
   when: true
