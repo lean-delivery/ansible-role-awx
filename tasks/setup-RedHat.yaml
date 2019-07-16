@@ -60,20 +60,28 @@
   register: installed_python_dependancies
   until: installed_python_dependancies is succeeded
 
-- name: Install other Python dependancies
-  yum:
-    name:
-      - 'rh-python36*'
-    #disablerepo:
-    #- '*'
-    enablerepo:
-    - mrmeee-ansible-awx
-    - base
-    exclude:
-    - '*-debuginfo'
-    state: present
-  register: installed_python36
-  until: installed_python36 is succeeded
+#- name: Install other Python dependancies
+#  yum:
+#    name:
+#      - 'rh-python36*'
+#    disablerepo:
+#    - '*'
+#    enablerepo:
+#    - mrmeee-ansible-awx
+#    - base
+#    exclude:
+#    - '*-debuginfo'
+#    state: present
+#  register: installed_python36
+#  until: installed_python36 is succeeded
+
+- name: Install other Python dependancies over shell
+  shell: |
+    set -o pipefail
+    yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
+  when: true
+  args:
+    executable: /bin/bash
 
 - name: Install AWX
   yum:
