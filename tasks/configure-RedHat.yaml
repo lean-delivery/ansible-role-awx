@@ -35,7 +35,7 @@
     argv:
     - scl
     - enable
-    - rh-postgresql10 
+    - rh-postgresql10
     - "su postgres -c \"createdb -O awx awx\""
   when: true
 
