@@ -116,7 +116,9 @@
 #  become_user: root
 
 - name: Start AWX service
-  shell: /usr/bin/ansibe-tower-service start | echo
+  shell: |
+    set -o pipefail
+    /usr/bin/ansibe-tower-service start | echo
   become: true
   become_user: awx
   when: true
