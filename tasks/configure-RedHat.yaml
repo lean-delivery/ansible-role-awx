@@ -13,7 +13,7 @@
 
 - name: Start and enable Postgresql Database services
   systemd:
-    enable: true
+    enabled: true
     state: started
     name: rh-postgresql10-postgresql
   become: true
@@ -21,7 +21,7 @@
 
 - name: Start and enable RabbitMQ service
   systemd:
-    enable: true
+    enabled: true
     state: started
     name: rabbitmq-server
   become: true
@@ -110,7 +110,7 @@
 
 - name: Start and enable AWX service
   systemd:
-    enable: true
+    enabled: true
     state: started
     name: awx
   become: true
