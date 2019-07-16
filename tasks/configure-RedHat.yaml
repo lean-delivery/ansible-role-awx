@@ -98,31 +98,31 @@
     systemd:
       enabled: true
       state: started
-      name: systemctl start awx-cbreceiver
+      name: awx-cbreceiver
 
   - name: Start and enable AWX service - dispatcher
     systemd:
       enabled: true
       state: started
-      name: systemctl start awx-dispatcher
+      name: awx-dispatcher
 
   - name: Start and enable AWX service - channels-worker
     systemd:
       enabled: true
       state: started
-      name: systemctl start awx-channels-worker
+      name: awx-channels-worker
 
   - name: Start and enable AWX service - daphne
     systemd:
       enabled: true
       state: started
-      name: systemctl start awx-daphne
+      name: awx-daphne
 
   - name: Start and enable AWX service - web
     systemd:
       enabled: true
       state: started
-      name: systemctl start awx-web
+      name: awx-web
 
   become: true
   become_user: root
