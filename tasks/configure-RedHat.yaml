@@ -51,7 +51,8 @@
 
 - name: Import Database data
   shell: |
-    scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
+    set -o pipefail
+    scl enable rh-python36 rh-postgresql10 "awx-manage migrate" | echo
   become: true
   become_user: awx
   becom_method: sudo
