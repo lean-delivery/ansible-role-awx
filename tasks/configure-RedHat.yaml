@@ -35,7 +35,7 @@
   become: true
   become_user: root
 
-- name: Create Postgres user and DB - create user
+- name: Create Postgres user
   command:
     argv:
     - scl
@@ -48,24 +48,34 @@
   become: true
   become_user: root
 
-- name: Create Postgres user and DB - create user - validation
+- name: Create Postgres user - validation
   set_fact: pg_create_user_result = failed
   when: pg_create_user_output.stderr|length > 0 and pg_create_user_output.stderr.find('already exists') == 0
 
-- name: Create Postgres user and DB - create user - fail in case of error
+- name: Create Postgres user - stop playbook in case of error
   fail: msg="Postgres failed creating user"
   when: pg_create_user_result == "failed"
 
-- name: Create Postgres user and DB - create DB
+- name: Create Postgres DB
   command:
     argv:
     - scl
     - enable
     - rh-postgresql10
     - "su postgres -c \"createdb -O awx awx\""
+  register: pg_create_db_output
+  ignore_errors: true
   when: true
   become: true
   become_user: root
+
+- name: Create Postgres db validation
+  set_fact: pg_create_db_result = failed
+  when: pg_create_db_output.stderr|length > 0 and pg_create_db_output.stderr.find('already exists') == 0
+
+- name: Create Postgres db - stop playbook in case of error
+  fail: msg="Postgres failed creating db"
+  when: pg_create_db_result == "failed"
 
 - name: Import Database data
   command: scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
@@ -73,16 +83,29 @@
   become_user: awx
   when: true
 
-- name: Initial configuration of AWX
+
+- name: Initial configuration of AWX - create superuser
   shell: |
     set -o pipefail
     echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
     scl enable rh-python36 rh-postgresql10 "awx-manage shell"
   become: true
   become_user: awx
+  register: awx_create_superuser_output
+  ignore_errors: true
   when: true
   args:
     executable: /bin/sh
+
+
+- name: Import Database data - validation
+  set_fact: awx_create_superuser_result = failed
+  when: awx_create_superuser_output.stderr|length > 0 and awx_create_superuser_output.stderr.find('already exists') == 0
+
+- name: Import Database data - stop playbook in case of error
+  fail: msg="Postgres failed creating db"
+  when: awx_create_superuser_result == "failed"
+
 
 - name: Initial configuration of AWX - create preload data
   command:
