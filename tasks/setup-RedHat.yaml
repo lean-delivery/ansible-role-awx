@@ -1,0 +1,69 @@
+
+---
+- name: add testing container to inventory
+  add_host:
+    name: centos-test
+    ansible_connection: docker
+  changed_when: false
+
+- name: Creates yum.repos.d directory
+    file:
+    path: /etc/yum.repos.d
+    state: directory
+
+
+- name: Install AWX repo
+    get_url:
+    url: https://copr.fedorainfracloud.org/coprs/mrmeee/ansible-awx/repo/epel-7/mrmeee-ansible-awx-epel-7.repo
+    dest: /etc/yum.repos.d/mrmeee-ansible-awx-epel-7.repo
+
+- name: Install EPEL Release
+    package:
+    name:
+    - epel-release
+    state: latest
+
+- name: Install SCL
+    package:
+    name:
+    - centos-release-scl
+    - scl-utils-build
+    state: latest
+
+- name: Install RabbitMQ
+    package:
+    name: rabbitmq-server
+    state: latest
+
+- name: Install Postgres and Memcached
+    package:
+    name: 
+      - rh-postgresql10
+      - memcached
+    state: latest
+
+- name: Install Python dependancies
+    package:
+    name: 
+      - rh-python36
+      - memcached
+    state: latest
+
+- name: Install other Python dependancies
+    yum:
+    name: 
+      - 'rh-python36*'
+    disablerepo:
+    - '*'
+    enablerepo: 
+    - mrmeee-ansible-awx
+    - base
+    exclude:
+    - '*-debuginfo'
+    state: latest
+
+- name: Install AWX
+    yum:
+    name:
+    - ansible-awx
+    state: latest
