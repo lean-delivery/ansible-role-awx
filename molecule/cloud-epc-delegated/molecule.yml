@@ -17,13 +17,6 @@ platforms:
     wait_timeout: 3600
     groups:
       - rhel_family
-  - name: test-epc-ubuntu1804-awx
-    image: Ubuntu18.04_64-bit
-    shape: small
-    region: EPAM-BY2
-    wait_timeout: 3600
-    groups:
-      - debian_family
 provisioner:
   name: ansible
   log: true
