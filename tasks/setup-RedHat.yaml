@@ -3,6 +3,7 @@
   file:
     path: /etc/yum.repos.d
     state: directory
+    mode: 644
 
 
 - name: Install AWX repo
