@@ -52,13 +52,12 @@
 - name: Import Database data
   command:
     argv:
-    - scl
-    - enable
-    - rh-python36
-    - rh-postgresql10
-    - "awx-manage migrate"
+    - sudo
+    - -u
+    - awx
+    - scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
   become: true
-  become_user: awx
+  become_user: root
   when: true
 
 - name: Initial configuration of AWX

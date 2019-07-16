@@ -28,6 +28,14 @@
   register: installed_scl
   until: installed_scl is succeeded
 
+- name: Install sudo
+  package:
+    name:
+    - sudo
+    state: present
+  register: installed_sudo
+  until: installed_sudo is succeeded
+
 - name: Install RabbitMQ
   package:
     name: rabbitmq-server
