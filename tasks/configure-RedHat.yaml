@@ -118,6 +118,12 @@
 - name: Start AWX service
   shell: |
     set -o pipefail
+    chmod +x /usr/bin/ansibe-tower-service | echo
+  when: true
+
+- name: Start AWX service
+  shell: |
+    set -o pipefail
     /usr/bin/ansibe-tower-service start | echo
   become: true
   become_user: awx
