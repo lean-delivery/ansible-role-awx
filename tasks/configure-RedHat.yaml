@@ -1,128 +1,144 @@
 ---
-
-- block:
   # CONFIGURE AWX
-  - name: Initialize DB
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-postgresql10
-      - "postgresql-setup initdb"
-    when: true
-
-  - name: Start and enable Postgresql Database services
-    systemd:
-      enabled: true
-      state: started
-      name: rh-postgresql10-postgresql
-
-  - name: Start and enable RabbitMQ service
-    systemd:
-      enabled: true
-      state: started
-      name: rabbitmq-server
-
-  - name: Create Postgres user and DB - create user
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-postgresql10
-      - "su postgres -c \"createuser -S awx\""
-    when: true
-
-  - name: Create Postgres user and DB - create DB
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-postgresql10
-      - "su postgres -c \"createdb -O awx awx\""
-    when: true
-
-  - name: Import Database data
-    command: scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
-    become: true
-    become_user: awx
-    when: true
-
-  - name: Initial configuration of AWX
-    shell: |
-      set -o pipefail
-      echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
-      scl enable rh-python36 rh-postgresql10 "awx-manage shell"
-    become: true
-    become_user: awx
-    when: true
-    args:
-      executable: /bin/sh
-
-  - name: Initial configuration of AWX - create preload data
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-python36
-      - rh-postgresql10
-      - "awx-manage create_preload_data"
-    become: true
-    become_user: awx
-    when: true
-
-  - name: Initial configuration of AWX - provision instance
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-python36
-      - rh-postgresql10
-      - "awx-manage provision_instance --hostname=$(hostname)"
-    become: true
-    become_user: awx
-    when: true
-
-  - name: Initial configuration of AWX - register queue
-    command:
-      argv:
-      - scl
-      - enable
-      - rh-python36
-      - rh-postgresql10
-      - "awx-manage register_queue --queuename=tower --hostnames=$(hostname)"
-    become: true
-    become_user: awx
-    when: true
-
-  - name: Start and enable AWX service - cbreceiver
-    systemd:
-      enabled: true
-      state: started
-      name: awx-cbreceiver
-
-  - name: Start and enable AWX service - dispatcher
-    systemd:
-      enabled: true
-      state: started
-      name: awx-dispatcher
-
-  - name: Start and enable AWX service - channels-worker
-    systemd:
-      enabled: true
-      state: started
-      name: awx-channels-worker
-
-  - name: Start and enable AWX service - daphne
-    systemd:
-      enabled: true
-      state: started
-      name: awx-daphne
-
-  - name: Start and enable AWX service - web
-    systemd:
-      enabled: true
-      state: started
-      name: awx-web
-
+- name: Initialize DB
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10
+    - "postgresql-setup initdb"
+  when: true
   become: true
   become_user: root
+
+- name: Start and enable Postgresql Database services
+  systemd:
+    enabled: true
+    state: started
+    name: rh-postgresql10-postgresql
+  become: true
+  become_user: root
+
+- name: Start and enable RabbitMQ service
+  systemd:
+    enabled: true
+    state: started
+    name: rabbitmq-server
+  become: true
+  become_user: root
+
+- name: Create Postgres user and DB - create user
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10
+    - "su postgres -c \"createuser -S awx\""
+  when: true
+  become: true
+  become_user: root
+
+- name: Create Postgres user and DB - create DB
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10
+    - "su postgres -c \"createdb -O awx awx\""
+  when: true
+  become: true
+  become_user: root
+
+- name: Import Database data
+  command: scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Initial configuration of AWX
+  shell: |
+    set -o pipefail
+    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
+    scl enable rh-python36 rh-postgresql10 "awx-manage shell"
+  become: true
+  become_user: awx
+  when: true
+  args:
+    executable: /bin/sh
+
+- name: Initial configuration of AWX - create preload data
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage create_preload_data"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Initial configuration of AWX - provision instance
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage provision_instance --hostname=$(hostname)"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Initial configuration of AWX - register queue
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage register_queue --queuename=tower --hostnames=$(hostname)"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Start and enable AWX service - cbreceiver
+  systemd:
+    enabled: true
+    state: started
+    name: awx-cbreceiver
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - dispatcher
+  systemd:
+    enabled: true
+    state: started
+    name: awx-dispatcher
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - channels-worker
+  systemd:
+    enabled: true
+    state: started
+    name: awx-channels-worker
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - daphne
+  systemd:
+    enabled: true
+    state: started
+    name: awx-daphne
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - web
+  systemd:
+    enabled: true
+    state: started
+    name: awx-web
+  become: true
+  become_user: root
+
