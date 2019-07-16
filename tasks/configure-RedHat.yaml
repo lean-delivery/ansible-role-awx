@@ -1,4 +1,11 @@
 ---
+
+- name: Setting initial facts
+  set_fact:
+    pg_create_user_result: ok
+    pg_create_db_result: ok
+    awx_create_superuser_result: ok
+
 - name: Check if PostgreSQL database is initialized.
   stat:
     path: "/var/opt/rh/rh-postgresql10/lib/pgsql/data/PG_VERSION"
