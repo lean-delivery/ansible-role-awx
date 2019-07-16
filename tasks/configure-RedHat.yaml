@@ -8,18 +8,24 @@
     - rh-postgresql10
     - "postgresql-setup initdb"
   when: true
+  become: true
+  become_user: root
 
 - name: Start and enable Postgresql Database services
   systemd:
     enable: true
     state: started
     name: rh-postgresql10-postgresql
+  become: true
+  become_user: root
 
 - name: Start and enable RabbitMQ service
   systemd:
     enable: true
     state: started
     name: rabbitmq-server
+  become: true
+  become_user: root
 
 - name: Create Postgres user and DB - create user
   command:
@@ -29,6 +35,8 @@
     - rh-postgresql10
     - "su postgres -c \"createuser -S awx\""
   when: true
+  become: true
+  become_user: root
 
 - name: Create Postgres user and DB - create DB
   command:
@@ -38,6 +46,8 @@
     - rh-postgresql10
     - "su postgres -c \"createdb -O awx awx\""
   when: true
+  become: true
+  become_user: root
 
 - name: Import Database data
   command:
@@ -103,3 +113,5 @@
     enable: true
     state: started
     name: awx
+  become: true
+  become_user: root
