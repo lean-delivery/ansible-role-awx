@@ -116,7 +116,7 @@
 #  become_user: root
 
 - name: Start AWX service
-  command: ansibe-tower-service start
+  shell: /usr/bin/ansibe-tower-service start | echo
   become: true
   become_user: awx
   when: true
