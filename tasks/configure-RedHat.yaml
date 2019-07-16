@@ -107,10 +107,16 @@
   become_user: awx
   when: true
 
-- name: Start and enable AWX service
-  systemd:
-    enabled: true
-    state: started
-    name: awx
+#- name: Start and enable AWX service
+#  systemd:
+#    enabled: true
+#    state: started
+#    name: awx
+#  become: true
+#  become_user: root
+
+- name: Start AWX service
+  command: ansibe-tower-service start
   become: true
-  become_user: root
+  become_user: awx
+  when: true
