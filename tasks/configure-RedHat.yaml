@@ -141,4 +141,3 @@
     name: awx-web
   become: true
   become_user: root
-
