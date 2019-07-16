@@ -52,15 +52,19 @@
   when: true
 
 - name: Initial configuration of AWX
-  command: |
-    - echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
+  shell: |
+    set -o pipefail
+    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
     scl enable rh-python36 rh-postgresql10 "awx-manage shell"
   become: true
   become_user: awx
   when: true
+  args:
+    executable: /bin/bash
 
 - name: Initial configuration of AWX - create preload data
   command:
+    argv:
     - scl
     - enable
     - rh-python36
@@ -72,6 +76,7 @@
 
 - name: Initial configuration of AWX - provision instance
   command:
+    argv:
     - scl
     - enable
     - rh-python36
@@ -83,6 +88,7 @@
 
 - name: Initial configuration of AWX - register queue
   command:
+    argv:
     - scl
     - enable
     - rh-python36
