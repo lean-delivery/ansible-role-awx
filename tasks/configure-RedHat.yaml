@@ -225,3 +225,5 @@
     state: present
   become: true
   when: ansible_selinux.status == "enabled" and ansible_selinux.mode != "disabled"
+  changed_when: false
+
