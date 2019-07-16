@@ -8,5 +8,7 @@ galaxy_info:
   license: Apache
   min_ansible_version: 2.7
   platforms: [{name: [EL], versions: [7]}]
-  galaxy_tags: awx, centos7
+  galaxy_tags:
+  - "awx"
+  - "centos7"
 dependencies: []

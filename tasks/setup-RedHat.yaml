@@ -1,11 +1,4 @@
-
 ---
-- name: add testing container to inventory
-  add_host:
-    name: centos-test
-    ansible_connection: docker
-  changed_when: false
-
 - name: Creates yum.repos.d directory
   file:
     path: /etc/yum.repos.d
@@ -21,33 +14,33 @@
   package:
     name:
     - epel-release
-    state: latest
+    state: present
 
 - name: Install SCL
   package:
     name:
     - centos-release-scl
     - scl-utils-build
-    state: latest
+    state: present
 
 - name: Install RabbitMQ
   package:
     name: rabbitmq-server
-    state: latest
+    state: present
 
 - name: Install Postgres and Memcached
   package:
     name:
       - rh-postgresql10
       - memcached
-    state: latest
+    state: present
 
 - name: Install Python dependancies
   package:
     name:
       - rh-python36
       - memcached
-    state: latest
+    state: present
 
 - name: Install other Python dependancies
   yum:
@@ -60,10 +53,10 @@
     - base
     exclude:
     - '*-debuginfo'
-    state: latest
+    state: present
 
 - name: Install AWX
   yum:
     name:
     - ansible-awx
-    state: latest
+    state: present
