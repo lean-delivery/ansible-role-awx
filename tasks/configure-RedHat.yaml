@@ -29,7 +29,8 @@
 
 - name: Initial configuration of AWX
   shell: |
-    - echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | scl enable rh-python36 rh-postgresql10 "awx-manage shell"
+    - echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
+    scl enable rh-python36 rh-postgresql10 "awx-manage shell"
   become: True
   become_user: awx
 
