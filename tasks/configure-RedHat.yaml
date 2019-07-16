@@ -50,10 +50,13 @@
   become_user: root
 
 - name: Import Database data
-  command: sudo -u awx scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
+  shell: scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
   become: true
-  become_user: root
+  become_user: awx
+  becom_method: sudo
   when: true
+  args:
+    executable: /bin/bash
 
 - name: Initial configuration of AWX
   shell: |
