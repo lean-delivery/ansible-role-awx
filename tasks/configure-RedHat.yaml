@@ -1,8 +1,12 @@
 ---
 # CONFIGURE AWX
 - name: Initialize DB
-  command: |
-    - scl enable rh-postgresql10 "postgresql-setup initdb"
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10
+    - "postgresql-setup initdb"
   when: true
 
 - name: Start and enable Postgresql Database services
@@ -17,15 +21,32 @@
     state: started
     name: rabbitmq-server
 
-- name: Create Postgres user and DB
-  command: |
-    - scl enable rh-postgresql10 "su postgres -c \"createuser -S awx\""
-    - scl enable rh-postgresql10 "su postgres -c \"createdb -O awx awx\""
+- name: Create Postgres user and DB - create user
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10
+    - "su postgres -c \"createuser -S awx\""
+  when: true
+
+- name: Create Postgres user and DB - create DB
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-postgresql10 
+    - "su postgres -c \"createdb -O awx awx\""
   when: true
 
 - name: Import Database data
-  command: |
-    - scl enable rh-python36 rh-postgresql10 "awx-manage migrate"
+  command:
+    argv:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage migrate"
   become: true
   become_user: awx
   when: true
@@ -38,11 +59,35 @@
   become_user: awx
   when: true
 
-- name: Initial configuration of AWX
-  command: |
-    - scl enable rh-python36 rh-postgresql10 "awx-manage create_preload_data" # Optional Sample Configuration
-    - scl enable rh-python36 rh-postgresql10 "awx-manage provision_instance --hostname=$(hostname)"
-    - scl enable rh-python36 rh-postgresql10 "awx-manage register_queue --queuename=tower --hostnames=$(hostname)"
+- name: Initial configuration of AWX - create preload data
+  command:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage create_preload_data"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Initial configuration of AWX - provision instance
+  command:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage provision_instance --hostname=$(hostname)"
+  become: true
+  become_user: awx
+  when: true
+
+- name: Initial configuration of AWX - register queue
+  command:
+    - scl
+    - enable
+    - rh-python36
+    - rh-postgresql10
+    - "awx-manage register_queue --queuename=tower --hostnames=$(hostname)"
   become: true
   become_user: awx
   when: true
