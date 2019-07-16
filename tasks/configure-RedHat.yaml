@@ -88,6 +88,7 @@
   become: true
   become_user: awx
   when: true
+  changed_when: false
 
 
 - name: Initial configuration of AWX - create superuser
@@ -124,6 +125,7 @@
   become: true
   become_user: awx
   when: true
+  changed_when: false
 
 - name: Initial configuration of AWX - provision instance
   command:
@@ -136,6 +138,7 @@
   become: true
   become_user: awx
   when: true
+  changed_when: false
 
 - name: Initial configuration of AWX - register queue
   command:
@@ -148,6 +151,7 @@
   become: true
   become_user: awx
   when: true
+  changed_when: false
 
 - name: Start and enable AWX service - cbreceiver
   systemd:
@@ -213,7 +217,7 @@
   become: true
   when: ansible_selinux.status == "enabled"
 
-- name: "SE Linux - Enable connections to HTTP port"
+- name: "SE Linux - Enable connections to HTTP(S) ports"
   seport:
     ports: "80, 443"
     proto: tcp
