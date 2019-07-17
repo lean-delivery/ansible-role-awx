@@ -17,4 +17,3 @@
   until: status is succeeded
   become: true
   when: ansible_selinux.status == 'enabled'
-  
