@@ -1,2 +1,5 @@
 ---
-# defaults file for awx
+# install part
+install:
+  rabbit: true
+  postgresql: true
