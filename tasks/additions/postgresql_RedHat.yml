@@ -29,8 +29,6 @@
   - name: Initialize DB
     command: /usr/pgsql-10/bin/postgresql-10-setup initdb
     when: not pgdata_file.stat.exists
-    become: true
-    become_user: postgres
 
   - name: Start and enable Postgresql Database services
     systemd:
@@ -42,7 +40,7 @@
   - name: Create Postgres DB
     postgresql_db:
       name: awx
-      login_unix_socket: /run/postgres
+      login_unix_socket: /run/postgresql
     become: true
     become_user: postgres
 
@@ -51,7 +49,7 @@
       name: awx
       db: awx
       encrypted: true
-      login_unix_socket: /run/postgres
+      login_unix_socket: /run/postgresql
     become: true
     become_user: postgres
 
