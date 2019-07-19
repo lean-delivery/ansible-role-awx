@@ -11,15 +11,6 @@
   loop_control:
     loop_var: platform
 
-- name: Install and configure RabbitMQ
-  include_tasks: '{{ rabbitmq_platform }}'
-  with_first_found:
-    - 'additions/rabbitmq_{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: rabbitmq_platform
-  when: install.rabbit
-
 - name: Install and configure Python
   include_tasks: '{{ python_platform }}'
   with_first_found:
@@ -28,6 +19,15 @@
   loop_control:
     loop_var: python_platform
   when: install.python
+
+- name: Install and configure RabbitMQ
+  include_tasks: '{{ rabbitmq_platform }}'
+  with_first_found:
+    - 'additions/rabbitmq_{{ ansible_os_family }}.yml'
+    - 'system/not-supported.yml'
+  loop_control:
+    loop_var: rabbitmq_platform
+  when: install.rabbitmq
 
 - name: Install and configure PostgreSQL
   include_tasks: '{{ postgresql_platform }}'

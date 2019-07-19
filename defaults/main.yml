@@ -1,5 +1,7 @@
 ---
 # install part
 install:
-  rabbit: true
+  rabbitmq: true
   postgresql: true
+  python: true
+  awx: true
