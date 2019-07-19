@@ -36,8 +36,11 @@
 
 - name: Initial configuration of AWX - create superuser
   tower_user:
-    tower_username: admin
-    tower_password: password
+    #tower_username: admin
+    #tower_password: password
+    username: admin
+    password: password
+    email: rcom-bflw-devops-team@epam.com
     state: present
     tower_host: localhost
     superuser: true
