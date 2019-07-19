@@ -40,7 +40,7 @@
     tower_password: password
     state: present
     tower_host: localhost
-    superuser: yes
+    superuser: true
   become: true
   become_user: awx
 
