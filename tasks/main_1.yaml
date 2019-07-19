@@ -1,6 +1,0 @@
----
-- name: Include OS-specific setup/install tasks.
-  include_tasks: "setup-{{ ansible_os_family }}.yaml"
-
-- name: Include OS-specific configuration tasks.
-  include_tasks: "configure-{{ ansible_os_family }}.yaml"
