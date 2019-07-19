@@ -22,12 +22,12 @@
   #################
   - name: Check if PostgreSQL database is initialized.
     stat:
-      path: "/var/lib/pgsql/data/PG_VERSION"
+      path: "/var/lib/pgsql/10/data/PG_VERSION"
     register: pgdata_file
 
     # CONFIGURE AWX
   - name: Initialize DB
-    command: postgresql-setup initdb
+    command: /usr/pgsql-10/bin/postgresql-10-setup initdb
     when: not pgdata_file.stat.exists
     become: true
     become_user: postgres
@@ -42,6 +42,7 @@
   - name: Create Postgres DB
     postgresql_db:
       name: awx
+      login_unix_socket: /run/postgres
     become: true
     become_user: postgres
 
@@ -49,6 +50,8 @@
     postgresql_user:
       name: awx
       db: awx
+      encrypted: true
+      login_unix_socket: /run/postgres
     become: true
     become_user: postgres
 
