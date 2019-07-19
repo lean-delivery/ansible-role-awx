@@ -16,11 +16,10 @@
     package:
       name:
       - epel-release
-      - centos-release-scl
-      - centos-release-scl-rh
+      - https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
       state: present
-    register: installed_epel_release
-    until: installed_epel_release is succeeded
+    register: installed_repos
+    until: installed_repos is succeeded
 
   - name: Install and configure SELinux
     include_tasks: 'selinux-support.yml'

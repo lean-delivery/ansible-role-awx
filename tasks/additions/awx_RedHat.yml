@@ -27,6 +27,13 @@
 #  args:
 #    executable: /bin/sh
 
+- name: Import Database data
+  command: awx-manage migrate
+  become: true
+  become_user: awx
+  when: true
+  changed_when: false
+
 - name: Initial configuration of AWX - create superuser
   tower_user:
     username: admin

@@ -2,14 +2,14 @@
 - name: Install Python36
   package:
     name:
-      - rh-python36
+      - python36
     state: present
   register: installed_python_dependencies
   until: installed_python_dependencies is succeeded
 
-- name: Install Python36 addons
-  shell: |
-    set -o pipefail
-    yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
-  when: true
-  changed_when: false
+#- name: Install Python36 addons
+#  shell: |
+#    set -o pipefail
+#    yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
+#  when: true
+#  changed_when: false
