@@ -16,7 +16,7 @@
     package:
       name:
       - epel-release
-      - centos-release-scl-rh
+      #- centos-release-scl-rh
       state: present
     register: installed_epel_release
     until: installed_epel_release is succeeded
@@ -24,17 +24,18 @@
   - name: Install Python
     package:
       name:
-        - rh-python36
+        - python36*
+        #- rh-python36
       state: present
     register: installed_python_dependencies
     until: installed_python_dependencies is succeeded
 
-  - name: Install other Python dependancies
-    shell: |
-      set -o pipefail
-      yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
-    when: true
-    changed_when: false
+  #- name: Install other Python dependancies
+  #  shell: |
+  #    set -o pipefail
+  #    #yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
+  #  when: true
+  #  changed_when: false
 
   - name: Install and configure SELinux
     include_tasks: 'selinux-support.yml'
