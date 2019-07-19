@@ -5,8 +5,9 @@
 - name: Install PostgreSQL and Memcached
   package:
     name:
-      - postgresql-server
-      - postgresql-contrib
+      #- postgresql-server
+      #- postgresql-contrib
+      - rh-postgresql10
       - memcached
     state: present
   register: installed_postgres
