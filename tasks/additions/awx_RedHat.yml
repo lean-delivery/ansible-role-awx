@@ -6,7 +6,7 @@
 - name: Install AWX
   package:
     name:
-    - ansible-awx
+    - awx
     state: present
   register: installed_awx
   until: installed_awx is succeeded
