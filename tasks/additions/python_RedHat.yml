@@ -13,6 +13,3 @@
     yum -y install --disablerepo='*' --enablerepo='mrmeee-ansible-awx, base' -x *-debuginfo rh-python36*
   when: true
   changed_when: false
-
-- name: Install and configure SELinux
-  include_tasks: 'selinux-support.yml'

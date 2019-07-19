@@ -22,5 +22,8 @@
     register: installed_epel_release
     until: installed_epel_release is succeeded
 
+  - name: Install and configure SELinux
+    include_tasks: 'selinux-support.yml'
+
   become: true
   become_user: root
