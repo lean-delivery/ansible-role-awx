@@ -36,10 +36,11 @@
 
 - name: Initial configuration of AWX - create superuser
   tower_user:
-    username: admin
-    password: password
+    tower_username: admin
+    tower_password: password
     state: present
-    host: localhost
+    tower_host: localhost
+    superuser: yes
   become: true
   become_user: awx
 
