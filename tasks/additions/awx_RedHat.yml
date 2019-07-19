@@ -41,6 +41,7 @@
     /opt/awx/bin/awx-manage shell
   become: true
   become_user: awx
+  when: true
   changed_when: false
 
 - name: Initial configuration of AWX - create preload data
