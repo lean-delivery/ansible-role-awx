@@ -1,4 +1,7 @@
 ---
+################
+# INSTALLATION #
+################
 - name: Install ansible selinux support library
   package:
     name: libselinux-python
@@ -17,3 +20,16 @@
   until: status is succeeded
   become: true
   when: ansible_selinux.status == 'enabled'
+
+################
+# CONFIGURATION #
+################
+- name: "SE Linux - Enable connections to HTTP(S) ports"
+  seport:
+    ports: "80, 443"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  become: true
+  when: ansible_selinux.status == "enabled" and ansible_selinux.mode != "disabled"
+  changed_when: false

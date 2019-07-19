@@ -1,1 +1,59 @@
 ---
+################
+# INSTALLATION #
+################
+- name: Install PostgreSQL and Memcached
+  package:
+    name:
+      - postgresql-server
+      - postgresql-contrib
+      - memcached
+    state: present
+  register: installed_postgres
+  until: installed_postgres is succeeded
+
+#################
+# CONFIGURATION #
+#################
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "/var/opt/rh/rh-postgresql10/lib/pgsql/data/PG_VERSION"
+  register: rh_pgdata_file
+  become: true
+  become_user: root
+
+  # CONFIGURE AWX
+- name: Initialize DB
+  command: postgresql-setup initdb
+  when: not rh_pgdata_file.stat.exists
+  become: true
+  become_user: root
+
+- name: Start and enable Postgresql Database services
+  systemd:
+    enabled: true
+    state: started
+    name: rh-postgresql10-postgresql
+  become: true
+  become_user: root
+
+### Configuring DB, Users, Permissions
+- name: Create Postgres DB
+  postgresql_db:
+    name: awx
+  become: true
+  become_user: postgres
+
+- name: Create Postgres user
+  postgresql_user:
+    name: awx
+    db: awx
+  become: true
+  become_user: postgres
+
+- name: Import Database data
+  command: awx-manage migrate
+  become: true
+  become_user: awx
+  when: true
+  changed_when: false

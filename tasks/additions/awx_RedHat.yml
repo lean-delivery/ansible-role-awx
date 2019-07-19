@@ -1,0 +1,101 @@
+---
+################
+# INSTALLATION #
+################
+
+- name: Install AWX
+  package:
+    name:
+    - ansible-awx
+    state: present
+  register: installed_awx
+  until: installed_awx is succeeded
+
+#################
+# CONFIGURATION #
+#################
+#- name: Initial configuration of AWX - create superuser
+#  shell: |
+#    set -o pipefail
+#    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
+#    scl enable rh-python36 rh-postgresql10 "awx-manage shell"
+#  become: true
+#  become_user: awx
+#  register: awx_create_superuser_output
+#  ignore_errors: true
+#  when: true
+#  args:
+#    executable: /bin/sh
+
+- name: Initial configuration of AWX - create superuser
+  tower_user:
+    username: admin
+    password: password
+    state: present
+    host: localhost
+  become: true
+  become_user: awx
+
+- name: Initial configuration of AWX - create preload data
+  command: awx-manage create_preload_data
+  become: true
+  become_user: awx
+  when: true
+  changed_when: false
+
+- name: Initial configuration of AWX - provision instance
+  command: awx-manage provision_instance --hostname=$(hostname)
+  become: true
+  become_user: awx
+  when: true
+  changed_when: false
+
+- name: Initial configuration of AWX - register queue
+  command: awx-manage register_queue --queuename=tower --hostnames=$(hostname)
+  become: true
+  become_user: awx
+  when: true
+  changed_when: false
+
+
+# Start and enable SYSTEMD services
+
+- name: Start and enable AWX service - cbreceiver
+  systemd:
+    enabled: true
+    state: started
+    name: awx-cbreceiver
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - dispatcher
+  systemd:
+    enabled: true
+    state: started
+    name: awx-dispatcher
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - channels-worker
+  systemd:
+    enabled: true
+    state: started
+    name: awx-channels-worker
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - daphne
+  systemd:
+    enabled: true
+    state: started
+    name: awx-daphne
+  become: true
+  become_user: root
+
+- name: Start and enable AWX service - web
+  systemd:
+    enabled: true
+    state: started
+    name: awx-web
+  become: true
+  become_user: root

@@ -1,1 +1,21 @@
 ---
+################
+# INSTALLATION #
+################
+- name: Install RabbitMQ
+  package:
+    name: rabbitmq-server
+    state: present
+  register: installed_rabbit_mq
+  until: installed_rabbit_mq is succeeded
+
+#################
+# CONFIGURATION #
+#################
+- name: Start and enable RabbitMQ service
+  systemd:
+    enabled: true
+    state: started
+    name: rabbitmq-server
+  become: true
+  become_user: root
