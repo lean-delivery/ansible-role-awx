@@ -12,10 +12,11 @@
       url: https://copr.fedorainfracloud.org/coprs/mrmeee/ansible-awx/repo/epel-7/mrmeee-ansible-awx-epel-7.repo
       dest: /etc/yum.repos.d/mrmeee-ansible-awx-epel-7.repo
 
-  - name: Add EPEL repository
+  - name: Add EPEL, SCL repositories
     package:
       name:
       - epel-release
+      - centos-release-scl-rh
       state: present
     register: installed_epel_release
     until: installed_epel_release is succeeded
