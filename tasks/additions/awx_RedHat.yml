@@ -34,11 +34,20 @@
   when: true
   changed_when: false
 
+- name: Configure shell for AWX user
+  user:
+    name: awx
+    shell: /bin/bash
+  become: true
+  become_user: root
+
 - name: Initial configuration of AWX - create superuser
   shell: |
     set -o pipefail
     echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
     /opt/awx/bin/awx-manage shell
+  args:
+    executable: /bin/bash
   become: true
   become_user: awx
   when: true
