@@ -14,6 +14,7 @@
         - postgresql10
         - memcached
         - python36-psycopg2
+        - python-psycopg2
         - postgresql-libs
       state: present
     register: installed_postgres
