@@ -28,7 +28,7 @@
 #    executable: /bin/sh
 
 - name: Import Database data
-  command: awx-manage migrate
+  command: /opt/awx/bin/awx-manage migrate
   become: true
   become_user: awx
   when: true
@@ -44,21 +44,21 @@
   become_user: awx
 
 - name: Initial configuration of AWX - create preload data
-  command: awx-manage create_preload_data
+  command: /opt/awx/bin/awx-manage create_preload_data
   become: true
   become_user: awx
   when: true
   changed_when: false
 
 - name: Initial configuration of AWX - provision instance
-  command: awx-manage provision_instance --hostname=$(hostname)
+  command: /opt/awx/bin/awx-manage provision_instance --hostname=$(hostname)
   become: true
   become_user: awx
   when: true
   changed_when: false
 
 - name: Initial configuration of AWX - register queue
-  command: awx-manage register_queue --queuename=tower --hostnames=$(hostname)
+  command: /opt/awx/bin/awx-manage register_queue --queuename=tower --hostnames=$(hostname)
   become: true
   become_user: awx
   when: true
