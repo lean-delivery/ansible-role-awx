@@ -29,6 +29,8 @@
   - name: Initialize DB
     command: postgresql-setup initdb
     when: not pgdata_file.stat.exists
+    become: true
+    become_user: postgres
 
   - name: Start and enable Postgresql Database services
     systemd:
