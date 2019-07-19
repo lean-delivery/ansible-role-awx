@@ -29,6 +29,15 @@
     loop_var: postgresql_platform
   when: install.postgresql
 
+- name: Install and configure Python
+  include_tasks: '{{ python_platform }}'
+  with_first_found:
+    - 'additions/python_{{ ansible_os_family }}.yml'
+    - 'system/not-supported.yml'
+  loop_control:
+    loop_var: python_platform
+  when: install.python
+
 - name: Install and configure AWX
   include_tasks: '{{ awx_platform }}'
   with_first_found:
