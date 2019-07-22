@@ -1,61 +1,50 @@
 ---
-# tasks file for ansible-role-docker
-# - name: Incule variables
-#   include_vars: '{{ ansible_os_family }}.yml'
+- name: Running tasks as root
+  block:
 
-- name: OS version
-  debug:
-    msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
-- name: OS version
-  debug:
-    msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
-- name: OS version
-  debug:
-    msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
-- name: OS version
-  debug:
-    msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
+  - name: Configure system
+    include_tasks: '{{ platform }}'
+    with_first_found:
+      - 'system/{{ ansible_os_family }}.yml'
+      - 'system/not-supported.yml'
+    loop_control:
+      loop_var: platform
 
-- name: Configure system
-  include_tasks: '{{ platform }}'
-  with_first_found:
-    - 'system/{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: platform
+  - name: Install and configure Python
+    include_tasks: '{{ python_platform }}'
+    with_first_found:
+      - 'additions/python_{{ ansible_os_family }}.yml'
+      - 'system/not-supported.yml'
+    loop_control:
+      loop_var: python_platform
+    when: install.python
 
-- name: Install and configure Python
-  include_tasks: '{{ python_platform }}'
-  with_first_found:
-    - 'additions/python_{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: python_platform
-  when: install.python
+  - name: Install and configure RabbitMQ
+    include_tasks: '{{ rabbitmq_platform }}'
+    with_first_found:
+      - 'additions/rabbitmq_{{ ansible_os_family }}.yml'
+      - 'system/not-supported.yml'
+    loop_control:
+      loop_var: rabbitmq_platform
+    when: install.rabbitmq
 
-- name: Install and configure RabbitMQ
-  include_tasks: '{{ rabbitmq_platform }}'
-  with_first_found:
-    - 'additions/rabbitmq_{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: rabbitmq_platform
-  when: install.rabbitmq
+  - name: Install and configure PostgreSQL
+    include_tasks: '{{ postgresql_platform }}'
+    with_first_found:
+      - 'additions/postgresql_{{ ansible_os_family }}.yml'
+      - 'system/not-supported.yml'
+    loop_control:
+      loop_var: postgresql_platform
+    when: install.postgresql
 
-- name: Install and configure PostgreSQL
-  include_tasks: '{{ postgresql_platform }}'
-  with_first_found:
-    - 'additions/postgresql_{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: postgresql_platform
-  when: install.postgresql
+  - name: Install and configure AWX
+    include_tasks: '{{ awx_platform }}'
+    with_first_found:
+      - 'additions/awx_{{ ansible_os_family }}.yml'
+      - 'system/not-supported.yml'
+    loop_control:
+      loop_var: awx_platform
+    when: install.awx
 
-- name: Install and configure AWX
-  include_tasks: '{{ awx_platform }}'
-  with_first_found:
-    - 'additions/awx_{{ ansible_os_family }}.yml'
-    - 'system/not-supported.yml'
-  loop_control:
-    loop_var: awx_platform
-  when: install.awx
+  become: true
+  become_user: root

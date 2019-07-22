@@ -14,18 +14,6 @@
 #################
 # CONFIGURATION #
 #################
-#- name: Initial configuration of AWX - create superuser
-#  shell: |
-#    set -o pipefail
-#    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
-#    scl enable rh-python36 rh-postgresql10 "awx-manage shell"
-#  become: true
-#  become_user: awx
-#  register: awx_create_superuser_output
-#  ignore_errors: true
-#  when: true
-#  args:
-#    executable: /bin/sh
 
 - name: Import Database data
   command: /opt/awx/bin/awx-manage migrate
@@ -38,8 +26,6 @@
   user:
     name: awx
     shell: /bin/bash
-  become: true
-  become_user: root
 
 - name: Initial configuration of AWX - create superuser
   shell: |
@@ -80,45 +66,33 @@
   when: true
   changed_when: false
 
-
 # Start and enable SYSTEMD services
-
 - name: Start and enable AWX service - cbreceiver
   systemd:
     enabled: true
     state: started
     name: awx-cbreceiver
-  become: true
-  become_user: root
 
 - name: Start and enable AWX service - dispatcher
   systemd:
     enabled: true
     state: started
     name: awx-dispatcher
-  become: true
-  become_user: root
 
 - name: Start and enable AWX service - channels-worker
   systemd:
     enabled: true
     state: started
     name: awx-channels-worker
-  become: true
-  become_user: root
 
 - name: Start and enable AWX service - daphne
   systemd:
     enabled: true
     state: started
     name: awx-daphne
-  become: true
-  become_user: root
 
 - name: Start and enable AWX service - web
   systemd:
     enabled: true
     state: started
     name: awx-web
-  become: true
-  become_user: root

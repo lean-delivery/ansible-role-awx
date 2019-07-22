@@ -1,28 +1,23 @@
 ---
-- block:
+- name: Create /etc/yum.repos.d directory
+  file:
+    path: /etc/yum.repos.d
+    state: directory
+    mode: 0644
 
-  - name: Create /etc/yum.repos.d directory
-    file:
-      path: /etc/yum.repos.d
-      state: directory
-      mode: 0644
+- name: Add AWX repository
+  get_url:
+    url: https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
+    dest: /etc/yum.repos.d/mrmeee-awx-epel-7.repo
 
-  - name: Add AWX repository
-    get_url:
-      url: https://copr.fedorainfracloud.org/coprs/mrmeee/awx/repo/epel-7/mrmeee-awx-epel-7.repo
-      dest: /etc/yum.repos.d/mrmeee-awx-epel-7.repo
+- name: Add EPEL, SCL repositories
+  package:
+    name:
+    - epel-release
+    - https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
+    state: present
+  register: installed_repos
+  until: installed_repos is succeeded
 
-  - name: Add EPEL, SCL repositories
-    package:
-      name:
-      - epel-release
-      - https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.3-x86_64/pgdg-redhat10-10-2.noarch.rpm
-      state: present
-    register: installed_repos
-    until: installed_repos is succeeded
-
-  - name: Install and configure SELinux
-    include_tasks: 'selinux-support.yml'
-
-  become: true
-  become_user: root
+- name: Install and configure SELinux
+  include_tasks: 'selinux-support.yml'
