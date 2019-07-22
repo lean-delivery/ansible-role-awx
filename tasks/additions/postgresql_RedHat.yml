@@ -13,7 +13,7 @@
         - postgresql10-server
         - postgresql10
         - memcached
-        - postgresql-libs
+        #- postgresql-libs
       state: present
     register: installed_postgres
     until: installed_postgres is succeeded

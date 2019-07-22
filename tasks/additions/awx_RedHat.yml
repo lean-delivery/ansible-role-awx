@@ -42,12 +42,16 @@
   become_user: root
 
 - name: Initial configuration of AWX - create superuser
-  shell: |
-    set -o pipefail
-    echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
-    /opt/awx/bin/awx-manage shell
-  args:
-    executable: /bin/bash
+  #shell: |
+  #  set -o pipefail
+  #  echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'root@localhost', 'password')" | \
+  #  /opt/awx/bin/awx-manage shell
+  #args:
+  #  executable: /bin/bash
+  #
+  django_manage:
+    command:
+      "createsuperuser --noinput --username=admin --email=admin@example.com"
   become: true
   become_user: awx
   when: true

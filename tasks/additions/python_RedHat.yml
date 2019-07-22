@@ -4,7 +4,7 @@
     name:
       - python36
       - python36-psycopg2
-      - python-psycopg2
+      #- python-psycopg2
     state: present
   register: installed_python_dependencies
   until: installed_python_dependencies is succeeded
