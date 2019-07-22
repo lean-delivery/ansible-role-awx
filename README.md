@@ -42,6 +42,10 @@ passed in as parameters) is always nice for users too:
       roles:
          - { role: awx, x: 42 }
 
+Known Bugs
+----------------
+* Idempotency is not working for creation of AWX superuser: [URL](https://github.com/ansible/ansible/issues/29786)
+
 License
 -------
 Apache
