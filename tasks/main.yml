@@ -3,6 +3,19 @@
 # - name: Incule variables
 #   include_vars: '{{ ansible_os_family }}.yml'
 
+- name: OS version
+  debug:
+    msg: "{{ hostvars[inventory_hostname].ansible_distribution }}"
+- name: OS version
+  debug:
+    msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+- name: OS version
+  debug:
+    msg: "{{ hostvars[inventory_hostname].ansible_distribution_version }}"
+- name: OS version
+  debug:
+    msg: "{{ hostvars[inventory_hostname].ansible_distribution_release }}"
+
 - name: Configure system
   include_tasks: '{{ platform }}'
   with_first_found:
